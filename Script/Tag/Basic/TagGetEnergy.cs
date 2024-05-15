@@ -11,7 +11,7 @@ public class TagGetEnergy : AbstractTag
     public override void UseTag(AbstractCreature source, AbstractCreature target)
     {
         base.UseTag(source, target);
-        GameActionManager.Instance.AddToBottom(new GetEnergyAction(target, value[0]));
+        GameActionManager.Instance.AddToBottom(new GetEnergyAction(source, value[0]));
         //target.GetEnergy(value[0]);
     }
     // Start is called before the first frame update

@@ -63,7 +63,7 @@ public class GameCoreCenter : MonoBehaviour
     {
 
 
-
+        //UIManager.Instance.FightUI.SetActive(false);
 
     }
    

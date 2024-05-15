@@ -6,7 +6,9 @@ public class EndTurnButton : MonoBehaviour
 {
     public void EndTurn()
     {
-        AbstractDungeon.Instance.ExchangeToPhase(AbstractDungeon.CombatPhase.Player);
+        //AbstractDungeon.Instance.StartNextTurn();
+        //GameActionManager.Instance.AddToBottom(new NextTurnAction());
+        GameActionManager.Instance.AddToBottom(new CalculateTurnEndAction());
     }
     // Start is called before the first frame update
     void Start()

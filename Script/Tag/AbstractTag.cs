@@ -6,6 +6,7 @@ public class AbstractTag
 {
     public int index;
     public string label;
+    public string comment;
     public List<int> value = new List<int>();
     public virtual void UseTag(AbstractCreature source, AbstractCreature target)
     {

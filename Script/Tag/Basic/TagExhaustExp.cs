@@ -11,7 +11,7 @@ public class TagExhaustExp : AbstractTag
     public override void UseTag(AbstractCreature source, AbstractCreature target)
     {
         base.UseTag(source, target);
-        GameActionManager.Instance.AddToBottom(new ExhaustExpAction(target, value[0]));
+        GameActionManager.Instance.AddToBottom(new ExhaustExpAction(source, value[0]));
         //target.ExhaustExp(value[0]);
     }
     // Start is called before the first frame update

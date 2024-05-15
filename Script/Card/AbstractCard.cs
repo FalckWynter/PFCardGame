@@ -40,6 +40,7 @@ public class AbstractCard
     }
     public bool RemoveTagByClass(AbstractTag tagToRemove)
     {
+        //Debug.Log("³¢ÊÔÉ¾³ýtag" + tagToRemove + "½á¹û" + tags.Contains(tagToRemove));
         if (!tags.Contains(tagToRemove))
             return false;
         tags.Remove(tagToRemove);
@@ -51,6 +52,14 @@ public class AbstractCard
             return false;
         tags.RemoveAt(place);
         return true;
+    }
+    public AbstractTag GetTagByPlace(int place)
+    {
+        return tags[place];
+    }
+    public int GetTagsCount()
+    {
+        return tags.Count;
     }
     // Start is called before the first frame update
     void Start()

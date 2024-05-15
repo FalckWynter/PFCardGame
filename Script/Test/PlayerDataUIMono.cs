@@ -4,11 +4,13 @@ using UnityEngine;
 using TMPro;
 public class PlayerDataUI : MonoBehaviour
 {
+    public AbstractCreature creature;
+    public bool isPlayer = false;
     public TextMeshProUGUI exp, atk, def,energy,health;
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -16,10 +18,14 @@ public class PlayerDataUI : MonoBehaviour
     {
         if (!AbstractDungeon.Instance.GetFighting())
             return;
-        health.text = AbstractDungeon.Instance.player.health.ToString();
-        energy.text = AbstractDungeon.Instance.player.energy.ToString();
-        exp.text = AbstractDungeon.Instance.player.exp.ToString();
-        atk.text = AbstractDungeon.Instance.player.attack.ToString();
-        def.text = AbstractDungeon.Instance.player.defend.ToString();
+        if (isPlayer)
+            creature = AbstractDungeon.Instance.player;
+        else
+            creature = AbstractDungeon.Instance.monster;
+        health.text = creature.currentHealth.ToString();
+        energy.text = creature.energy.ToString();
+        exp.text = creature.exp.ToString();
+        atk.text = creature.attack.ToString();
+        def.text = creature.defend.ToString();
     }
 }

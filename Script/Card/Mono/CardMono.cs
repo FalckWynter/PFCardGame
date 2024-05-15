@@ -4,7 +4,8 @@ using UnityEngine;
 using System;
 using TMPro;
 using UnityEngine.EventSystems;
-public class CardMono : MonoBehaviour,IPointerClickHandler,IPointerEnterHandler,IPointerExitHandler
+
+public class CardMono : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler/*,IDragHandler, IBeginDragHandler,IEndDragHandler*/
 {
     public TextMeshProUGUI text;
 
@@ -12,6 +13,7 @@ public class CardMono : MonoBehaviour,IPointerClickHandler,IPointerEnterHandler,
 
     public CardMonoStateMachile FSM = new CardMonoStateMachile();
 
+    public RectTransform rectTransform;
     public void Initialize(AbstractCard card)
     {
         cardData = card;
@@ -20,6 +22,7 @@ public class CardMono : MonoBehaviour,IPointerClickHandler,IPointerEnterHandler,
     // Start is called before the first frame update
     public void Start()
     {
+        //rectTransform = GetComponent<RectTransform>();
         FSM.Initialize(this.gameObject);
         FSM.parentGameobject = this.gameObject;
         //UnityAction<BaseEventData> action = new UnityAction<BaseEventData>(onHomeItemDown);
@@ -54,29 +57,77 @@ public class CardMono : MonoBehaviour,IPointerClickHandler,IPointerEnterHandler,
             FSM.ExchangeState(CardMonoStateMachile.CardMonoStateType.None);
         }
     }
-
+    float counter;
+    CardMonoStateMachile.CardMonoStateType tempType;
     public void OnPointerEnter(PointerEventData eventData)
     {
+        UIManager.Instance.ShowCardLore(cardData);
         if (FSM.currentState.stateType != CardMonoStateMachile.CardMonoStateType.Selected)
-            FSM.ExchangeState(CardMonoStateMachile.CardMonoStateType.Hover);
+                FSM.ExchangeState(CardMonoStateMachile.CardMonoStateType.Hover);
+
+     
+            
+        
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        UIManager.Instance.DisCardLore();
         if (FSM.currentState.stateType != CardMonoStateMachile.CardMonoStateType.Selected)
             FSM.ExchangeState(CardMonoStateMachile.CardMonoStateType.None);
     }
+
+    //public void OnDrag(PointerEventData eventData)
+    //{
+    //    if(Draging)
+    //    transform.GetComponent<RectTransform>().position = eventData.position - startPosOffset;
+    //}
+    //bool Draging = false;
+    //public Vector2 startPosOffset;
+    //public void OnBeginDrag(PointerEventData eventData)
+    //{
+    //    Draging = true;
+    //    FSM.ExchangeState(CardMonoStateMachile.CardMonoStateType.Drag);
+    //    startPosOffset = eventData.position - (Vector2)transform.GetComponent<RectTransform>().position;
+    //    Debug.Log("鼠标位置" + eventData.position + "物体位置" + (Vector2)transform.GetComponent<RectTransform>().position + "偏移位置" + startPosOffset);
+    //}
+
+    //public void OnEndDrag(PointerEventData eventData)
+    //{
+    //    Draging = false;
+    //    if(AbstractDungeon.Instance.isHovering)
+    //    {
+    //        if (!AbstractDungeon.Instance.player.IsHaveEnoughEnergy(cardData.cost))
+    //        {
+    //            FSM.ExchangeState(CardMonoStateMachile.CardMonoStateType.None);
+
+    //        }
+    //        else
+    //        {
+    //            cardData.UseCard(AbstractDungeon.Instance.player, AbstractDungeon.Instance.player);
+    //            AbstractDungeon.Instance.player.MoveCardFormHandToDiscard(cardData);
+    //            Destroy(gameObject);
+    //            return;
+    //        }
+    //    }
+    //    FSM.ExchangeState(CardMonoStateMachile.CardMonoStateType.None);
+    //}
+
+
 }
 [Serializable]
 public class CardMonoStateMachile
 {
     public GameObject parentGameobject;
 
+    public RectTransform rectTransform;
+
     public CardMonoState currentState = new CardMonoState();
 
     public void Initialize(GameObject parent)
     {
         parent = parentGameobject;
+        //rectTransform = parentGameobject.GetComponent<RectTransform>();
     }
     public void ExchangeState(CardMonoStateType type)
     {
@@ -91,12 +142,12 @@ public class CardMonoStateMachile
     }
     public enum CardMonoStateType
     {
-        None,Selected,Hover
+        None,Selected,Hover,Drag
     }
     public Dictionary<CardMonoStateType, CardMonoState> cardMonoStateDictionary = new Dictionary<CardMonoStateType, CardMonoState>()
     {
         {CardMonoStateType.None, new CardMonoStateNone()},{CardMonoStateType.Selected,new CardMonoStateSelected()},
-        {CardMonoStateType.Hover,new CardMonoStateHover() }
+        {CardMonoStateType.Hover,new CardMonoStateHover() },{CardMonoStateType.Drag,new CardMonoStateDrag() }
     };
 }
 public class CardMonoState
@@ -137,12 +188,12 @@ public class CardMonoStateSelected : CardMonoState
     {
         base.EnterState();
         stateType = CardMonoStateMachile.CardMonoStateType.Selected;
-        FSM.parentGameobject.GetComponent<RectTransform>() .anchoredPosition3D += selectOffset;
+        FSM.rectTransform .position += selectOffset;
     }
     public override void ExitState()
     {
         base.ExitState();
-        FSM.parentGameobject.GetComponent<RectTransform>().anchoredPosition3D -= selectOffset;
+        FSM.rectTransform.position -= selectOffset;
     }
 }
 public class CardMonoStateHover : CardMonoState
@@ -152,12 +203,35 @@ public class CardMonoStateHover : CardMonoState
     {
         base.EnterState();
         stateType = CardMonoStateMachile.CardMonoStateType.Hover;
-        FSM.parentGameobject.GetComponent<RectTransform>().anchoredPosition3D += selectOffset;
-       
+        FSM.rectTransform.position += selectOffset;
+        FSM.rectTransform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+
     }
     public override void ExitState()
     {
         base.ExitState();
-        FSM.parentGameobject.GetComponent<RectTransform>().anchoredPosition3D -= selectOffset;
+        FSM.rectTransform.position -= selectOffset;
+        FSM.rectTransform.localScale = new Vector3(1,1,1);
+    }
+}public class CardMonoStateDrag : CardMonoState
+{
+    Vector3 selectOffset = new Vector3(0, 25,0);
+    Vector2 startPosition;
+    public override void EnterState()
+    {
+        base.EnterState();
+        startPosition = FSM.rectTransform.position;
+        FSM.rectTransform.position += selectOffset;
+        stateType = CardMonoStateMachile.CardMonoStateType.Drag;
+
+        //FSM.parentGameobject.GetComponent<RectTransform>().anchoredPosition3D += selectOffset;
+
+    }
+    public override void ExitState()
+    {
+        base.ExitState();
+        FSM.rectTransform.position = startPosition;
+        Debug.Log("还原到" + startPosition);
+        //FSM.parentGameobject.GetComponent<RectTransform>().anchoredPosition3D -= selectOffset;
     }
 }

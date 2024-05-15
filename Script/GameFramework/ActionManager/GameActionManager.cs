@@ -37,6 +37,7 @@ public  class GameActionManager : UpdateSingleton<GameActionManager>
     public  void AddToLate(AbstractAction action)
     {
         actionLateList.Add(action);
+        //Debug.Log("增加到延迟列表:" + action + "当前队列数量:" + actionLateList.Count );
     }
     //更新Action
     public override void OnUpdate()

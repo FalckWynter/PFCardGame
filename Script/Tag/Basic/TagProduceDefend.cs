@@ -11,7 +11,7 @@ public class TagProduceDefend : AbstractTag
     public override void UseTag(AbstractCreature source, AbstractCreature target)
     {
         base.UseTag(source, target);
-        GameActionManager.Instance.AddToBottom(new GetDefendAction(target, value[0]));
+        GameActionManager.Instance.AddToBottom(new GetDefendAction(source, value[0]));
         //target.GetDefend(value[0]);
     }
     // Start is called before the first frame update

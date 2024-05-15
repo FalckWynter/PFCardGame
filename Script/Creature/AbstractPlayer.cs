@@ -7,20 +7,24 @@ public class AbstractPlayer : AbstractCreature
     public AbstractPlayer()
     {
         maxHealth = 100;
-        health = maxHealth;
+        currentHealth = maxHealth;
         creatureType = CreatureType.Player;
         masterDeck.AddCard(new CardBasicAttack());
         masterDeck.AddCard(new CardBasicAttack());
-        masterDeck.AddCard(new CardBasicDefend());
-        masterDeck.AddCard(new CardBasicDefend());
-        masterDeck.AddCard(new CardBasicGrowExp());
-        masterDeck.AddCard(new CardBasicDraw());
-        masterDeck.AddCard(new CardBasicDraw());
+        masterDeck.AddCard(new CardBasicAttack());
+        masterDeck.AddCard(new CardBasicAttack());
+        //masterDeck.AddCard(new CardBasicDefend());
+        //masterDeck.AddCard(new CardBasicDefend());
+        //masterDeck.AddCard(new CardBasicGrowExp());
+        //masterDeck.AddCard(new CardBasicDraw());
+        //masterDeck.AddCard(new CardBasicDraw());
     }
     public override void BattlePrepare()
     {
         base.BattlePrepare();
         //¿ª¾Ö³éÂúÊÖÅÆ
+        drawPile.InitializeDeckByDeck(masterDeck);
+        drawPile.Shuffle();
         GameActionManager.Instance.AddToBottom(new DrawCardAction(this, 4, true));
     }
 
@@ -36,8 +40,8 @@ public class AbstractPlayer : AbstractCreature
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        
+        base.Update();
     }
 }

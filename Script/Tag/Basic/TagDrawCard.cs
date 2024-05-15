@@ -11,7 +11,7 @@ public class TagDrawCard : AbstractTag
     public override void UseTag(AbstractCreature source, AbstractCreature target)
     {
         base.UseTag(source, target);
-        GameActionManager.Instance.AddToBottom(new DrawCardAction(target, value[0],target.creatureType == AbstractCreature.CreatureType.Player));
+        GameActionManager.Instance.AddToBottom(new DrawCardAction(source, value[0],target.creatureType == AbstractCreature.CreatureType.Player));
         //target.DrawCard(value[0]);
     }
     // Start is called before the first frame update
